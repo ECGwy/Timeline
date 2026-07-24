@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --tl-background: #f8f9fc;
+  --tl-foreground: #1e293b;
+  --tl-card: #ffffff;
+  --tl-card-foreground: #1e293b;
+  --tl-popover: #ffffff;
+  --tl-popover-foreground: #1e293b;
+  --tl-primary: #4f46e5;
+  --tl-primary-foreground: #ffffff;
+  --tl-muted: #f1f5f9;
+  --tl-muted-foreground: #64748b;
+  --tl-border: #e2e8f0;
+  --tl-input: #e2e8f0;
+  --tl-ring: #4f46e5;
+  --tl-radius-sm: 4px;
+  --tl-radius-md: 8px;
+  --tl-radius-lg: 12px;
+  --tl-state-success: #10b981;
+  --tl-state-warning: #f59e0b;
+  --tl-state-error: #ef4444;
+  --tl-state-info: #3b82f6;
+}
+
+.dark {
+  --tl-background: #0f172a;
+  --tl-foreground: #f8fafc;
+  --tl-card: #1e293b;
+  --tl-card-foreground: #f8fafc;
+  --tl-popover: #1e293b;
+  --tl-popover-foreground: #f8fafc;
+  --tl-primary: #6366f1;
+  --tl-primary-foreground: #ffffff;
+  --tl-muted: #334155;
+  --tl-muted-foreground: #94a3b8;
+  --tl-border: #334155;
+  --tl-input: #334155;
+  --tl-ring: #6366f1;
+}
+
+body {
+  background: var(--tl-background);
+  color: var(--tl-foreground);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.task-bar {
+  transition: all duration-150;
+}
+
+.task-bar:hover {
+  filter: brightness(0.92);
+}
+
+#drag-container {
+  cursor: grab;
+  user-select: none;
+}
+
+#drag-container.grabbing {
+  cursor: grabbing;
+}
