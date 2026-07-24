@@ -58,7 +58,7 @@ export function TaskCard({ task, left, onClick, labelRef }: TaskCardProps) {
       >
         <span className="text-xs font-medium text-[var(--tl-foreground)]">{task.title}</span>
         <span className="text-[10px] text-[var(--tl-muted-foreground)] mt-1">{formatDateDisplay(task.startDate)} - {formatDateDisplay(task.endDate)}</span>
-        {task.progress !== undefined && task.progress > 0 && (
+        {task.progress !== undefined && (
           <div className="mt-2 w-full bg-[var(--tl-border)] rounded-full h-1">
             <div
               className="h-1 rounded-full transition-all duration-300"

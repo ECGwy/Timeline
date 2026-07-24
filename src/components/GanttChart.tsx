@@ -10,6 +10,8 @@ interface GanttChartProps {
   rowCount: number;
   onEventClick: (event: Event) => void;
   onTaskEdit: (task: Task) => void;
+  onTaskProgressChange?: (id: string, progress: number) => void;
+  onTaskDelete?: (id: string) => void;
   todayRowIndex?: number;
   // 外层竖向滚动容器（App 的 scrollContainerRef）：用于滚动时把任务描述贴到条块可见上沿
   scrollContainerRef?: RefObject<HTMLDivElement>;
@@ -42,8 +44,9 @@ interface OverflowPopover {
   events: Event[];
 }
 
-export function GanttChart({ events, tasks, rowCount, onEventClick, onTaskEdit, todayRowIndex, scrollContainerRef }: GanttChartProps) {
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+export function GanttChart({ events, tasks, rowCount, onEventClick, onTaskEdit, onTaskProgressChange, onTaskDelete, todayRowIndex, scrollContainerRef }: GanttChartProps) {
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const selectedTask = tasks.find(t => t.id === selectedTaskId) || null;
   const [isDragging, setIsDragging] = useState(false);
   const [extraWidth, setExtraWidth] = useState(0);
   const [overflowPopover, setOverflowPopover] = useState<OverflowPopover | null>(null);
@@ -364,7 +367,7 @@ export function GanttChart({ events, tasks, rowCount, onEventClick, onTaskEdit, 
                 key={task.id}
                 task={task}
                 left={eventZoneWidth + (task.column - 1) * TASK_COL_WIDTH}
-                onClick={() => setSelectedTask(task)}
+                onClick={() => setSelectedTaskId(task.id)}
                 labelRef={(el) => {
                   if (el) descRefs.current.set(task.id, el);
                   else descRefs.current.delete(task.id);
@@ -413,10 +416,15 @@ export function GanttChart({ events, tasks, rowCount, onEventClick, onTaskEdit, 
       {selectedTask && (
         <TaskDetailModal
           task={selectedTask}
-          onClose={() => setSelectedTask(null)}
+          onClose={() => setSelectedTaskId(null)}
           onEdit={() => {
             onTaskEdit(selectedTask);
-            setSelectedTask(null);
+            setSelectedTaskId(null);
+          }}
+          onProgressChange={onTaskProgressChange}
+          onDelete={() => {
+            if (selectedTask) onTaskDelete?.(selectedTask.id);
+            setSelectedTaskId(null);
           }}
         />
       )}
