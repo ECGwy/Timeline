@@ -287,7 +287,8 @@ function App() {
     endDate: string,
     priority: Priority,
     assignee: string,
-    description: string
+    description: string,
+    progress: number
   ) => {
     const newTask: Task = {
       id: `t${Date.now()}`,
@@ -300,7 +301,7 @@ function App() {
       column: 1,
       assignee: assignee || undefined,
       description: description || undefined,
-      progress: 0,
+      progress,
     };
     setTasks([...tasks, newTask]);
   };
@@ -312,7 +313,8 @@ function App() {
     endDate: string,
     priority: Priority,
     assignee: string,
-    description: string
+    description: string,
+    progress: number
   ) => {
     setTasks(tasks.map(task =>
       task.id === id
@@ -324,6 +326,7 @@ function App() {
             priority,
             assignee: assignee || undefined,
             description: description || undefined,
+            progress,
           }
         : task
     ));
@@ -337,6 +340,16 @@ function App() {
   const handleTaskEdit = (task: Task) => {
     setEditingTask(task);
     setShowAddTaskModal(true);
+  };
+
+  const handleTaskProgressChange = (id: string, progress: number) => {
+    setTasks(tasks.map(task =>
+      task.id === id ? { ...task, progress } : task
+    ));
+  };
+
+  const handleDeleteTask = (id: string) => {
+    setTasks(tasks.filter(task => task.id !== id));
   };
 
   const handleOpenAddEventModal = () => {
@@ -387,6 +400,8 @@ function App() {
               rowCount={timelineRows.length}
               onEventClick={handleEventClick}
               onTaskEdit={handleTaskEdit}
+              onTaskProgressChange={handleTaskProgressChange}
+              onTaskDelete={handleDeleteTask}
               todayRowIndex={todayRowIndex}
               scrollContainerRef={scrollContainerRef}
             />

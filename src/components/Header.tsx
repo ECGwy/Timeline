@@ -12,7 +12,7 @@ export function Header({ isDark, onToggleTheme, onAddEvent, onAddTask, onGoToTod
   return (
     <header className="h-12 flex-shrink-0 flex items-center justify-between px-5 border-b border-[var(--tl-border)] bg-[var(--tl-card)]">
       <div className="flex items-center gap-4">
-        <h1 className="text-lg font-semibold text-[var(--tl-foreground)]">时间轴 Demo</h1>
+        <h1 className="text-lg font-semibold text-[var(--tl-foreground)]">Timeline</h1>
         <div className="flex items-center gap-2">
           <button
             onClick={onGoToToday}

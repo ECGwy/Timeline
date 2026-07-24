@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { X, Calendar, User, FileText } from 'lucide-react';
+import { X, Calendar, User, FileText, Gauge } from 'lucide-react';
 import { Priority, Task } from '../types';
 
 interface AddTaskModalProps {
@@ -10,7 +10,8 @@ interface AddTaskModalProps {
     endDate: string,
     priority: Priority,
     assignee: string,
-    description: string
+    description: string,
+    progress: number
   ) => void;
   onEdit: (
     id: string,
@@ -19,7 +20,8 @@ interface AddTaskModalProps {
     endDate: string,
     priority: Priority,
     assignee: string,
-    description: string
+    description: string,
+    progress: number
   ) => void;
   editingTask?: Task | null;
 }
@@ -29,6 +31,7 @@ export function AddTaskModal({ onClose, onAdd, onEdit, editingTask }: AddTaskMod
   const [priority, setPriority] = useState<Priority>('medium');
   const [assignee, setAssignee] = useState('');
   const [description, setDescription] = useState('');
+  const [progress, setProgress] = useState(0);
 
   const today = new Date();
   const [startYear, setStartYear] = useState(today.getFullYear());
@@ -61,6 +64,7 @@ export function AddTaskModal({ onClose, onAdd, onEdit, editingTask }: AddTaskMod
       setPriority(editingTask.priority);
       setAssignee(editingTask.assignee || '');
       setDescription(editingTask.description || '');
+      setProgress(editingTask.progress ?? 0);
       const [sy, sm, sd] = editingTask.startDate.split('-').map(Number);
       const [ey, em, ed] = editingTask.endDate.split('-').map(Number);
       setStartYear(sy);
@@ -74,6 +78,7 @@ export function AddTaskModal({ onClose, onAdd, onEdit, editingTask }: AddTaskMod
       setPriority('medium');
       setAssignee('');
       setDescription('');
+      setProgress(0);
       setStartYear(today.getFullYear());
       setStartMonth(today.getMonth() + 1);
       setStartDay(today.getDate());
@@ -106,9 +111,9 @@ export function AddTaskModal({ onClose, onAdd, onEdit, editingTask }: AddTaskMod
       const finalEndDate = startDate <= endDate ? endDateStr : startDateStr;
 
       if (editingTask) {
-        onEdit(editingTask.id, title.trim(), finalStartDate, finalEndDate, priority, assignee.trim(), description.trim());
+        onEdit(editingTask.id, title.trim(), finalStartDate, finalEndDate, priority, assignee.trim(), description.trim(), progress);
       } else {
-        onAdd(title.trim(), finalStartDate, finalEndDate, priority, assignee.trim(), description.trim());
+        onAdd(title.trim(), finalStartDate, finalEndDate, priority, assignee.trim(), description.trim(), progress);
       }
       onClose();
     }
@@ -309,6 +314,43 @@ export function AddTaskModal({ onClose, onAdd, onEdit, editingTask }: AddTaskMod
               rows={3}
               className="w-full px-3 py-2 rounded-md border border-[var(--tl-border)] bg-[var(--tl-muted)] text-[var(--tl-card-foreground)] placeholder:text-[var(--tl-muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--tl-primary)] resize-none"
             ></textarea>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[var(--tl-card-foreground)] mb-1">
+              <Gauge className="w-4 h-4 inline mr-1" />
+              进度
+            </label>
+            <div className="flex items-center gap-3">
+              <input
+                type="range"
+                min={0}
+                max={100}
+                step={5}
+                value={progress}
+                onChange={(e) => setProgress(Number(e.target.value))}
+                className="flex-1 h-2 rounded-full appearance-none cursor-pointer accent-[var(--tl-primary)]"
+                style={{ background: `linear-gradient(to right, var(--tl-primary) ${progress}%, var(--tl-border) ${progress}%)` }}
+              />
+              <span className="text-sm font-medium text-[var(--tl-card-foreground)] min-w-[3rem] text-right">{progress}%</span>
+            </div>
+            <div className="flex gap-1 mt-2">
+              {[0, 25, 50, 75, 100].map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => setProgress(v)}
+                  className="flex-1 px-2 py-1 text-xs rounded border transition-colors"
+                  style={{
+                    borderColor: progress === v ? 'var(--tl-primary)' : 'var(--tl-border)',
+                    background: progress === v ? 'var(--tl-primary)' : 'var(--tl-muted)',
+                    color: progress === v ? 'var(--tl-primary-foreground)' : 'var(--tl-muted-foreground)',
+                  }}
+                >
+                  {v}%
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="flex gap-2 pt-2">
